@@ -1791,7 +1791,7 @@ void IRGeneratorForStatements::endVisit(MemberAccess const& _memberAccess)
 			else
 				define(_memberAccess) << formatNumber(integerType->max()) << "\n";
 		}
-		else if (set<string>{"encode", "encodePacked", "encodeWithSelector", "encodeWithSignature", "decode"}.count(member))
+		else if (set<string>{"encode", "encodePacked", "encodeWithSelector", "encodeWithSignature", "decode", "callactor"}.count(member))
 		{
 			// no-op
 		}

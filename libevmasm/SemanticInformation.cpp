@@ -263,6 +263,7 @@ SemanticInformation::Effect SemanticInformation::memory(Instruction _instruction
 	case Instruction::CALLCODE:
 	case Instruction::DELEGATECALL:
 	case Instruction::STATICCALL:
+	case Instruction::CALLACTOR:
 		return SemanticInformation::Write;
 
 	case Instruction::CREATE:
