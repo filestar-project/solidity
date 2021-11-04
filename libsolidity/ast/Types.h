@@ -1157,6 +1157,10 @@ public:
 		Assert, ///< assert()
 		Require, ///< require()
 		CallActor, ///< CALLACTOR
+		ImportData, ///< ImportData
+		Init, ///< Init
+		Drop, ///< Drop
+		Retrieve, ///< Retrieve
 		ABIEncode,
 		ABIEncodePacked,
 		ABIEncodeWithSelector,

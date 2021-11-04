@@ -62,6 +62,10 @@ int magicVariableToID(std::string const& _name)
 	else if (_name == "type") return -27;
 	else if (_name == "this") return -28;
 	else if (_name == "callactor") return -29;
+	else if (_name == "init") return -30;
+	else if (_name == "drop") return -31;
+	else if (_name == "importData") return -32;
+	else if (_name == "retrieve") return -33;
 	else
 		solAssert(false, "Unknown magic variable: \"" + _name + "\".");
 }
@@ -71,7 +75,6 @@ inline vector<shared_ptr<MagicVariableDeclaration const>> constructMagicVariable
 	static auto const magicVarDecl = [](string const& _name, Type const* _type) {
 		return make_shared<MagicVariableDeclaration>(magicVariableToID(_name), _name, _type);
 	};
-
 	return {
 		magicVarDecl("abi", TypeProvider::magic(MagicType::Kind::ABI)),
 		magicVarDecl("addmod", TypeProvider::function(strings{"uint256", "uint256", "uint256"}, strings{"uint256"}, FunctionType::Kind::AddMod, false, StateMutability::Pure)),
@@ -94,6 +97,10 @@ inline vector<shared_ptr<MagicVariableDeclaration const>> constructMagicVariable
 		magicVarDecl("sha3", TypeProvider::function(strings{"bytes memory"}, strings{"bytes32"}, FunctionType::Kind::KECCAK256, false, StateMutability::Pure)),
 		magicVarDecl("suicide", TypeProvider::function(strings{"address payable"}, strings{}, FunctionType::Kind::Selfdestruct)),
 		magicVarDecl("callactor", TypeProvider::function(strings{"address payable", "uint256", "bytes memory"}, strings{"bytes memory"}, FunctionType::Kind::CallActor, false, StateMutability::Payable)),
+		magicVarDecl("init", TypeProvider::function(strings{"string memory", "string memory", "string memory", "uint256", "uint256", "int256", "bool", "bool","address payable"}, strings{}, FunctionType::Kind::Init, false, StateMutability::Payable)),
+		magicVarDecl("drop", TypeProvider::function(strings{"uint256"}, strings{}, FunctionType::Kind::Drop, false, StateMutability::Pure)),
+		magicVarDecl("importData", TypeProvider::function(strings{"string memory", "bool"}, strings{}, FunctionType::Kind::ImportData, false, StateMutability::Pure)),
+		magicVarDecl("retrieve", TypeProvider::function(strings{"string memory", "string memory", "string memory", "string memory", "address payable", "uint256", "bool"}, strings{}, FunctionType::Kind::Retrieve, false, StateMutability::Payable)),
 		magicVarDecl("tx", TypeProvider::magic(MagicType::Kind::Transaction)),
 		// Accepts a MagicType that can be any contract type or an Integer type and returns a
 		// MagicType. The TypeChecker handles the correctness of the input and output types.

@@ -185,6 +185,11 @@ enum class Instruction: uint8_t
 	EIP615_RETURNSUB,          ///< return to subroutine jumped from -- not part of Instructions.cpp
 	EIP615_PUTLOCAL,           ///< pop top of stack to local variable -- not part of Instructions.cpp
 	EIP615_GETLOCAL,           ///< push local variable to top of stack -- not part of Instructions.cpp
+	
+	IMPORTLOCAL = 0xc0,			///< import data to local storage
+	DROP,						///< drop id from local storage
+	RETRIEVE,					///< get data to local storage
+	INIT,						///< init deal and get CID of it
 
 	CREATE = 0xf0,		///< create a new account with associated code
 	CALL,				///< message-call into an account

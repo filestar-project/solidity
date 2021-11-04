@@ -300,6 +300,23 @@ u256 EVMInstructionInterpreter::eval(
 		accessMemory(arg[0], arg[1]);
 		logTrace(_instruction, arg);
 		return 0;
+	// --------------- storage ---------------
+	case Instruction::RETRIEVE:
+		accessMemory(arg[0], arg[1]);
+		accessMemory(arg[2], arg[3]);
+		accessMemory(arg[6], arg[7]);
+		accessMemory(arg[8], arg[9]);
+		return 0;
+	case Instruction::INIT:
+		accessMemory(arg[0], arg[1]);
+		accessMemory(arg[3], arg[4]);
+		accessMemory(arg[9], arg[10]);
+		return 0;
+	case Instruction::IMPORTLOCAL:
+		accessMemory(arg[0], arg[1]);
+		return 0;
+	case Instruction::DROP:
+		return 0;
 	// --------------- calls ---------------
 	case Instruction::CREATE:
 		accessMemory(arg[1], arg[2]);
@@ -323,7 +340,7 @@ u256 EVMInstructionInterpreter::eval(
 		logTrace(_instruction, arg);
 		return 0;
 	case Instruction::CALLACTOR:
-		accessMemory(arg[3], arg[4]);
+		accessMemory(arg[2], arg[3]);
 		logTrace(_instruction, arg);
 		return 0;
 	case Instruction::RETURN:

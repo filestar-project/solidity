@@ -176,7 +176,12 @@ std::map<std::string, Instruction> const solidity::evmasm::c_instructions =
 	{ "REVERT", Instruction::REVERT },
 	{ "INVALID", Instruction::INVALID },
 	{ "SELFDESTRUCT", Instruction::SELFDESTRUCT },
-	{ "CALLACTOR", Instruction::CALLACTOR }
+	{ "CALLACTOR", Instruction::CALLACTOR },
+	{ "IMPORTLOCAL", Instruction::IMPORTLOCAL },
+	{ "DROP", Instruction::DROP },
+	{ "RETRIEVE", Instruction::RETRIEVE },
+	{ "INIT", Instruction::INIT }
+
 };
 
 static std::map<Instruction, InstructionInfo> const c_instructionInfo =
@@ -320,10 +325,14 @@ static std::map<Instruction, InstructionInfo> const c_instructionInfo =
 	{ Instruction::DELEGATECALL,	{ "DELEGATECALL",	0, 6, 1, true, Tier::Special } },
 	{ Instruction::STATICCALL,	{ "STATICCALL",		0, 6, 1, true, Tier::Special } },
 	{ Instruction::CREATE2,		{ "CREATE2",		0, 4, 1, true, Tier::Special } },
-	{ Instruction::REVERT,		{ "REVERT",		0, 2, 0, true, Tier::Zero } },
+	{ Instruction::REVERT,		{ "REVERT",			0, 2, 0, true, Tier::Zero } },
 	{ Instruction::INVALID,		{ "INVALID",		0, 0, 0, true, Tier::Zero } },
 	{ Instruction::SELFDESTRUCT,	{ "SELFDESTRUCT",		0, 1, 0, true, Tier::Special } },
-	{ Instruction::CALLACTOR,		{ "CALLACTOR",			0, 5, 1, true, Tier::Base } }
+	{ Instruction::CALLACTOR,	{ "CALLACTOR",		0, 5, 1, true, Tier::Base } },
+	{ Instruction::IMPORTLOCAL, { "IMPORTLOCAL", 	0, 3, 0, true, Tier::Base } },
+	{ Instruction::DROP,		{ "DROP", 			0, 1, 0, true, Tier::Base } },
+	{ Instruction::RETRIEVE,	{ "RETRIEVE", 		0, 11, 0, true, Tier::Base } },
+	{ Instruction::INIT,		{ "INIT", 			0, 12, 0, true, Tier::Base } }
 };
 
 void solidity::evmasm::eachInstruction(
