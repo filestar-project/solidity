@@ -263,6 +263,9 @@ SemanticInformation::Effect SemanticInformation::memory(Instruction _instruction
 	case Instruction::CALLCODE:
 	case Instruction::DELEGATECALL:
 	case Instruction::STATICCALL:
+	case Instruction::CALLACTOR:
+	case Instruction::INIT:
+	case Instruction::IMPORTLOCAL:
 		return SemanticInformation::Write;
 
 	case Instruction::CREATE:
@@ -277,6 +280,8 @@ SemanticInformation::Effect SemanticInformation::memory(Instruction _instruction
 	case Instruction::LOG2:
 	case Instruction::LOG3:
 	case Instruction::LOG4:
+	case Instruction::DROP:
+	case Instruction::RETRIEVE:
 		return SemanticInformation::Read;
 
 	default:

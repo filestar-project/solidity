@@ -136,6 +136,18 @@ GasMeter::GasConsumption GasMeter::estimateMax(AssemblyItem const& _item, bool _
 				gas = GasConsumption::infinite();
 			break;
 		}
+		case Instruction::IMPORTLOCAL:
+			gas = runGas(Instruction::IMPORTLOCAL);
+			break;
+		case Instruction::DROP:
+			gas = runGas(Instruction::DROP);
+			break;
+		case Instruction::INIT:
+			gas = runGas(Instruction::INIT);
+			break;
+		case Instruction::RETRIEVE:
+			gas = runGas(Instruction::RETRIEVE);
+			break;
 		case Instruction::CALL:
 		case Instruction::CALLCODE:
 		case Instruction::DELEGATECALL:
@@ -200,6 +212,9 @@ GasMeter::GasConsumption GasMeter::estimateMax(AssemblyItem const& _item, bool _
 			break;
 		case Instruction::SELFBALANCE:
 			gas = runGas(Instruction::SELFBALANCE);
+			break;
+		case Instruction::CALLACTOR:
+			gas = runGas(Instruction::CALLACTOR);
 			break;
 		default:
 			gas = runGas(_item.instruction());

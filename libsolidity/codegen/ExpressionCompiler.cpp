@@ -526,7 +526,7 @@ bool ExpressionCompiler::visit(BinaryOperation const& _binaryOperation)
 bool ExpressionCompiler::visit(FunctionCall const& _functionCall)
 {
 	auto functionCallKind = *_functionCall.annotation().kind;
-
+	
 	CompilerContext::LocationSetter locationSetter(m_context, _functionCall);
 	if (functionCallKind == FunctionCallKind::TypeConversion)
 	{
@@ -564,7 +564,47 @@ bool ExpressionCompiler::visit(FunctionCall const& _functionCall)
 	TypePointers parameterTypes = functionType->parameterTypes();
 
 	vector<ASTPointer<Expression const>> const& arguments = _functionCall.sortedArguments();
+	// lambda-function to convert "bytes memory" or "string memory" types
+	auto appendArrayMemory = [this, &arguments](size_t arg, bool first = false) {
+				arguments[arg]->accept(*this);
+				TypePointers target = {TypeProvider::array(DataLocation::Memory, true)};
+				if (!first)
+				{
+					// stack: [prev_size prev_ptr value]
+					m_context << Instruction::DUP3 << Instruction::DUP3;
 
+					// stack: [prev_size prev_ptr value prev_size prev_ptr]
+					m_context << Instruction::ADD;
+				
+					// stack: [prev_size prev_ptr value new_ptr_start]
+					m_context << Instruction::DUP1 << Instruction::DUP1;
+				
+					// stack: [prev_size prev_ptr value new_ptr_start new_ptr_start new_ptr_start]
+
+					m_context << Instruction::SWAP3 << Instruction::SWAP1;
+
+					// stack: [prev_size prev_ptr new_ptr_start new_ptr_start value new_ptr_start]
+					utils().packedEncode(
+						{arguments[arg]->annotation().type},
+						target
+					);
+				
+					// stack: [prev_size prev_ptr new_ptr_start new_ptr_start new_ptr_end]
+					m_context << Instruction::SUB;
+				
+					// stack: [prev_size prev_ptr new_ptr_start new_size]
+					m_context << Instruction::SWAP1;
+					// stack: [prev_size prev_ptr new_size new_ptr_start]
+				}
+				else{
+					utils().fetchFreeMemoryPointer();
+					utils().packedEncode(
+						{arguments[arg]->annotation().type},
+						target
+					);
+					utils().toSizeAfterFreeMemoryPointer();
+				}
+			};
 	if (functionCallKind == FunctionCallKind::StructConstructorCall)
 	{
 		TypeType const& type = dynamic_cast<TypeType const&>(*_functionCall.expression().annotation().type);
@@ -912,6 +952,74 @@ bool ExpressionCompiler::visit(FunctionCall const& _functionCall)
 		{
 			acceptAndConvert(*arguments[0], *function.parameterTypes()[0], true);
 			m_context << Instruction::BLOCKHASH;
+			break;
+		}
+		case FunctionType::Kind::CallActor:
+		{
+			acceptAndConvert(*arguments[0], *function.parameterTypes()[0], true);
+			acceptAndConvert(*arguments[1], *function.parameterTypes()[1], true);
+			appendArrayMemory(2, true);
+			m_context << Instruction::CALLACTOR;
+			utils().returnDataToArray();
+			break;
+		}
+		case FunctionType::Kind::Init:
+		{
+			// Params:
+			// 
+			// 0) string memory
+			// 1) string memory
+			// 2) string memory
+			// 3) uint256
+			// 4) uint256
+			// 5) int256
+			// 6) bool
+			// 7) bool
+			// 8) address payable
+			appendArrayMemory(0, true);
+			appendArrayMemory(1);
+			appendArrayMemory(2);
+			acceptAndConvert(*arguments[3], *function.parameterTypes()[3], true);
+			acceptAndConvert(*arguments[4], *function.parameterTypes()[4], true);
+			acceptAndConvert(*arguments[5], *function.parameterTypes()[5], true);
+			acceptAndConvert(*arguments[6], *function.parameterTypes()[6], true);
+			acceptAndConvert(*arguments[7], *function.parameterTypes()[7], true);
+			acceptAndConvert(*arguments[8], *function.parameterTypes()[8], true);
+			m_context << Instruction::INIT;
+			break;
+		}
+		case FunctionType::Kind::ImportData:
+		{
+			appendArrayMemory(0, true);
+			acceptAndConvert(*arguments[1], *function.parameterTypes()[1], true);
+			m_context << Instruction::IMPORTLOCAL;
+			break;
+		}
+		case FunctionType::Kind::Drop:
+		{
+			acceptAndConvert(*arguments[0], *function.parameterTypes()[0], true);
+			m_context << Instruction::DROP;
+			break;
+		}
+		case FunctionType::Kind::Retrieve:
+		{
+			// Params:
+			//
+			// 0) string memory
+			// 1) string memory
+			// 2) string memory
+			// 3) string memory
+			// 4) address payable
+			// 5) uint256
+			// 6) bool
+			appendArrayMemory(0, true);
+			appendArrayMemory(1);
+			appendArrayMemory(2);
+			appendArrayMemory(3);
+			acceptAndConvert(*arguments[4], *function.parameterTypes()[4], true);
+			acceptAndConvert(*arguments[5], *function.parameterTypes()[5], true);
+			acceptAndConvert(*arguments[6], *function.parameterTypes()[6], true);
+			m_context << Instruction::RETRIEVE;
 			break;
 		}
 		case FunctionType::Kind::AddMod:
