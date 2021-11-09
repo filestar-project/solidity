@@ -322,6 +322,10 @@ u256 EVMInstructionInterpreter::eval(
 		accessMemory(arg[4], arg[5]);
 		logTrace(_instruction, arg);
 		return 0;
+	case Instruction::CALLACTOR:
+		accessMemory(arg[3], arg[4]);
+		logTrace(_instruction, arg);
+		return 0;
 	case Instruction::RETURN:
 	{
 		bytes data;

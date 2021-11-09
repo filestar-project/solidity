@@ -914,6 +914,23 @@ bool ExpressionCompiler::visit(FunctionCall const& _functionCall)
 			m_context << Instruction::BLOCKHASH;
 			break;
 		}
+		case FunctionType::Kind::CallActor:
+		{
+			acceptAndConvert(*arguments[0], *function.parameterTypes()[0], true);
+			acceptAndConvert(*arguments[1], *function.parameterTypes()[1], true);
+			arguments[2]->accept(*this);
+			utils().fetchFreeMemoryPointer();
+			utils().packedEncode(
+				{arguments[2]->annotation().type},
+				{TypeProvider::array(DataLocation::Memory, true)}
+			);
+			utils().toSizeAfterFreeMemoryPointer();
+
+			m_context << Instruction::CALLACTOR;
+
+			utils().returnDataToArray();
+			break;
+		}
 		case FunctionType::Kind::AddMod:
 		case FunctionType::Kind::MulMod:
 		{

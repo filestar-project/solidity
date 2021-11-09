@@ -61,6 +61,7 @@ int magicVariableToID(std::string const& _name)
 	else if (_name == "tx") return -26;
 	else if (_name == "type") return -27;
 	else if (_name == "this") return -28;
+	else if (_name == "callactor") return -29;
 	else
 		solAssert(false, "Unknown magic variable: \"" + _name + "\".");
 }
@@ -92,6 +93,7 @@ inline vector<shared_ptr<MagicVariableDeclaration const>> constructMagicVariable
 		magicVarDecl("sha256", TypeProvider::function(strings{"bytes memory"}, strings{"bytes32"}, FunctionType::Kind::SHA256, false, StateMutability::Pure)),
 		magicVarDecl("sha3", TypeProvider::function(strings{"bytes memory"}, strings{"bytes32"}, FunctionType::Kind::KECCAK256, false, StateMutability::Pure)),
 		magicVarDecl("suicide", TypeProvider::function(strings{"address payable"}, strings{}, FunctionType::Kind::Selfdestruct)),
+		magicVarDecl("callactor", TypeProvider::function(strings{"address payable", "uint256", "bytes memory"}, strings{"bytes memory"}, FunctionType::Kind::CallActor, false, StateMutability::Payable)),
 		magicVarDecl("tx", TypeProvider::magic(MagicType::Kind::Transaction)),
 		// Accepts a MagicType that can be any contract type or an Integer type and returns a
 		// MagicType. The TypeChecker handles the correctness of the input and output types.

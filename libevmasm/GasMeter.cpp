@@ -201,6 +201,9 @@ GasMeter::GasConsumption GasMeter::estimateMax(AssemblyItem const& _item, bool _
 		case Instruction::SELFBALANCE:
 			gas = runGas(Instruction::SELFBALANCE);
 			break;
+		case Instruction::CALLACTOR:
+			gas = runGas(Instruction::CALLACTOR);
+			break;
 		default:
 			gas = runGas(_item.instruction());
 			break;

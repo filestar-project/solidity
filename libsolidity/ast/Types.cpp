@@ -2869,6 +2869,7 @@ string FunctionType::richIdentifier() const
 	case Kind::ObjectCreation: id += "objectcreation"; break;
 	case Kind::Assert: id += "assert"; break;
 	case Kind::Require: id += "require"; break;
+	case Kind::CallActor: id += "callactor"; break;
 	case Kind::ABIEncode: id += "abiencode"; break;
 	case Kind::ABIEncodePacked: id += "abiencodepacked"; break;
 	case Kind::ABIEncodeWithSelector: id += "abiencodewithselector"; break;
@@ -3156,6 +3157,7 @@ MemberList::MemberMap FunctionType::nativeMembers(ASTNode const* _scope) const
 	case Kind::Creation:
 	case Kind::BareCall:
 	case Kind::BareCallCode:
+	case Kind::CallActor:
 	case Kind::BareDelegateCall:
 	case Kind::BareStaticCall:
 	{

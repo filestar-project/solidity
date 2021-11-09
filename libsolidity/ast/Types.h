@@ -1156,6 +1156,7 @@ public:
 		ObjectCreation, ///< array creation using new
 		Assert, ///< assert()
 		Require, ///< require()
+		CallActor, ///< CALLACTOR
 		ABIEncode,
 		ABIEncodePacked,
 		ABIEncodeWithSelector,
